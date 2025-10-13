@@ -5,11 +5,13 @@ public class GhostCroosObject : MonoBehaviour
     [SerializeField]
     private LayerMask triggerObject;
 
-    public int gaugeMax;
+    public int gaugeMax = 100 ; 
     
     public int currentGauge;
 
-    public bool isBool;
+    public bool isTrigger;
+    
+    
     void Start()
     {
         
