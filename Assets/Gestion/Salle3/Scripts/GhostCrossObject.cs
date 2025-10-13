@@ -9,7 +9,7 @@ public class GhostCroosObject : MonoBehaviour
     
     public int currentGauge;
 
-    public bool;
+    public bool isBool;
     void Start()
     {
         
