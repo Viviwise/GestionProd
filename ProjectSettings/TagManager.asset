@@ -9,12 +9,11 @@ TagManager:
   - Interactable
   - Ladder
   - Slide
-  - PlacementZone
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Cross
+  - Possessable
   - Water
   - UI
   - 
