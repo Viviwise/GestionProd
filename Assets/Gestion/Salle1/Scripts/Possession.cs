@@ -13,7 +13,7 @@ public class Possession : MonoBehaviour
     public Camera hamsterCamera;
     public HamsterController hamsterController;
     
-    private KeyCode toggleKey = KeyCode.E;
+    private KeyCode toggleKey = KeyCode.H;
 
     void Update()
     {
