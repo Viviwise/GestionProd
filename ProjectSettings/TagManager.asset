@@ -9,6 +9,7 @@ TagManager:
   - Interactable
   - Ladder
   - Slide
+  - Placeable
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Placeable
   - 
   - 
   - 
