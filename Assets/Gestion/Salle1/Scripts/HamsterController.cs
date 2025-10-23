@@ -3,12 +3,14 @@ using UnityEngine;
 public class HamsterController : MonoBehaviour
 {
     public float speed = 3f;
-    public Transform cameraTransform; 
+    public Transform cameraTransform;
+    private CharacterController controller;
 
     void Start()
     {
         if (cameraTransform == null)
             cameraTransform = Camera.main.transform;
+        controller = GetComponent<CharacterController>();
     }
 
     void Update()

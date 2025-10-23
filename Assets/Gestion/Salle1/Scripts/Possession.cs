@@ -1,3 +1,4 @@
+using System;
 using Unity.Hierarchy;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -6,12 +7,12 @@ public class Possession : MonoBehaviour
 {
     
     public GameObject ghost;
-    public Camera ghostCamera;
-    public PlayerMovement playerMovement;
+   // public Camera camGhost;
+  //  public PlayerMovement playerMovement;
     
     public GameObject hamster;
-    public Camera hamsterCamera;
-    public HamsterController hamsterController;
+   // public Camera camHamster;
+ //   public HamsterController hamsterController;
     
     private KeyCode toggleKey = KeyCode.H;
 
@@ -29,16 +30,15 @@ public class Possession : MonoBehaviour
         {
             return;
         }
-
         bool aActive = ghost.activeSelf;
-
-        ghost.SetActive(!aActive);
-        ghostCamera.enabled = !aActive;
-        playerMovement.enabled = !aActive;
         
+        ghost.SetActive(!aActive);
+       // playerMovement.enabled = !aActive;
+       // camGhost.enabled = !aActive;
+
         hamster.SetActive(aActive);
-        hamsterCamera.enabled = aActive;
-        hamsterController.enabled = aActive;
+       // hamsterController.enabled = aActive;
+       // camHamster.enabled = aActive;
     }
 }
 
