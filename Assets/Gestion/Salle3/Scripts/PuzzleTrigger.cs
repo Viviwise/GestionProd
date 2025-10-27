@@ -96,7 +96,7 @@ public class PuzzleTrigger : MonoBehaviour
         if (showDebugLogs)
             Debug.Log($"🎉 [{puzzleName}] Puzzle complété!");
 
-        // Notifier le manager
+      
         if (puzzleManager != null)
         {
             puzzleManager.OnPuzzleCompleted(puzzleName);
@@ -124,7 +124,7 @@ public class PuzzleTrigger : MonoBehaviour
         CompletePuzzle();
     }
 
-    // Getters
+ 
     public string GetPuzzleName() => puzzleName;
     public int GetProgress() => triggersActivated;
     public float GetProgressPercentage() => (float)triggersActivated / triggersRequired * 100f;
