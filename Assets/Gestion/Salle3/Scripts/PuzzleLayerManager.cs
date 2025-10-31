@@ -14,15 +14,15 @@ public class PuzzleLayerManager : MonoBehaviour
 {
     [Header("Configuration des Puzzles")]
     [SerializeField] private List<PuzzleLayerReward> puzzleRewards = new List<PuzzleLayerReward>();
-    
+
     [Header("Progression")]
     [SerializeField] private int completedPuzzles = 0;
     [SerializeField] private bool allPuzzlesCompleted = false;
-    
+
     [Header("Options")]
     [SerializeField] private bool activateLayersInOrder = false; // Si true, les puzzles doivent être complétés dans l'ordre
     [SerializeField] private bool showDebugLogs = true;
-    
+
     [Header("Events")]
     public UnityEvent<int> onPuzzleCompleted; // Nombre de puzzles complétés
     public UnityEvent onAllPuzzlesCompleted;
@@ -120,7 +120,7 @@ public class PuzzleLayerManager : MonoBehaviour
         if (completedPuzzles >= puzzleRewards.Count && !allPuzzlesCompleted)
         {
             allPuzzlesCompleted = true;
-            
+
             if (showDebugLogs)
                 Debug.Log("🏆 TOUS LES PUZZLES COMPLÉTÉS!");
 
@@ -146,7 +146,7 @@ public class PuzzleLayerManager : MonoBehaviour
     public void ResetPuzzle(string puzzleName)
     {
         PuzzleLayerReward puzzle = puzzleRewards.Find(p => p.puzzleName == puzzleName);
-        
+
         if (puzzle != null && puzzle.isCompleted)
         {
             puzzle.isCompleted = false;

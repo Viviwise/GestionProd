@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* 
-
     First Person Interaction Toolkit by Steven Harmon stevenharmongames.com
     Licensed under the MPL 2.0. https://www.mozilla.org/en-US/MPL/2.0/FAQ/
     Please use in your walking sims/horror/adventure/puzzle games! Drop me a line and share what make with it! :)    
-
- */
+*/
 
 [RequireComponent(typeof(AudioSource))]
-public class GrabbableObject : MonoBehaviour {
+public class GrabbableObject : MonoBehaviour 
+{
     [HideInInspector]
     public bool beingCarried = false;
     private Rigidbody rigid;
+    
     [Header("For Picking Up / Inspecting Things - ensure collider, rigidbody, and trigger")]
     [Tooltip("MainCamera -> Empty Game Object, a bit in front")]
     public Transform HoldPos;
@@ -50,8 +50,8 @@ public class GrabbableObject : MonoBehaviour {
     //mute collision sounds on start (so things can fall down and set silently)
     private bool muteCollSound = true;
 
-    // Use this for initialization
-    void Start () {
+    void Start() 
+    {
         rigid = gameObject.GetComponent<Rigidbody>();
         MainCam = GameObject.FindWithTag("MainCamera");
         if (MainCam == null)
@@ -71,34 +71,86 @@ public class GrabbableObject : MonoBehaviour {
         if (!beingCarried)
             InteractionScript.message = prompts[0];
     }
+
     public void Interacting()
     {
+        // ✅ PROTECTION COMPLÈTE CONTRE LES ERREURS
+        Debug.Log($"🎯 Interacting appelé sur {gameObject.name}");
+        
+        // Vérification du tableau lookScript
+        if (lookScript == null)
+        {
+            Debug.LogError($"❌ [{gameObject.name}] lookScript est NULL ! Allez dans Inspector et configurez Look Script.");
+            return;
+        }
+        
+        if (lookScript.Length < 2)
+        {
+            Debug.LogError($"❌ [{gameObject.name}] lookScript.Length = {lookScript.Length} (doit être 2) ! Allez dans Inspector → Look Script → Size = 2");
+            return;
+        }
+        
+        if (lookScript[0] == null)
+        {
+            Debug.LogError($"❌ [{gameObject.name}] lookScript[0] est NULL ! Assignez MainCamera (Mouse Look) dans Element 0");
+            return;
+        }
+        
+        if (lookScript[1] == null)
+        {
+            Debug.LogError($"❌ [{gameObject.name}] lookScript[1] est NULL ! Assignez Player (Mouse Look) dans Element 1");
+            return;
+        }
+
+        // Si on arrive ici, tout est OK
+        Debug.Log($"✅ [{gameObject.name}] Configuration correcte !");
+        
         beingCarried = !beingCarried;
+        
         if (!beingCarried)
         {
+            // LANCER L'OBJET
+            Debug.Log($"🚀 Lancer de {gameObject.name}");
             rigid.isKinematic = false;
             transform.parent = null;
-            rigid.AddForce(MainCam.transform.forward * throwSpeed);  
-            source.pitch = 1;
-            source.clip = clips[1];//Throw
-            source.Play();
+            rigid.AddForce(MainCam.transform.forward * throwSpeed);
+            
+            if (clips != null && clips.Length > 1 && clips[1] != null)
+            {
+                source.pitch = 1;
+                source.clip = clips[1]; // Throw
+                source.Play();
+            }
+            
             rotating = false;
+            
+            // Réactiver la rotation de la caméra
             for (int i = 0; i < lookScript.Length; i++)
             {
-                lookScript[i].working = true;
+                if (lookScript[i] != null)
+                    lookScript[i].working = true;
             }
+            
             touched = false;
         }
         else if (beingCarried)
         {
+            // RAMASSER L'OBJET
+            Debug.Log($"📦 Ramassage de {gameObject.name}");
             rigid.isKinematic = true;
             transform.position = HoldPos.position;
             transform.parent = MainCam.transform;
-            source.pitch = 1;
-            source.clip = clips[0];//Pickup
-            source.Play();
+            
+            if (clips != null && clips.Length > 0 && clips[0] != null)
+            {
+                source.pitch = 1;
+                source.clip = clips[0]; // Pickup
+                source.Play();
+            }
+            
             objectReset = false;
         }
+        
         InteractionScript.message = prompts[1];
         InteractionScript.CrosshairUI.SetActive(false);
     }
@@ -106,24 +158,17 @@ public class GrabbableObject : MonoBehaviour {
     public void RelativeRotate(float rotateLeftRight, float rotateUpDown)
     {
         float sensitivity = 5f;
-        //Gets the world vector space for cameras up vector 
         Vector3 relativeUp = MainCam.transform.TransformDirection(Vector3.up);
-        //Gets world vector for space cameras right vector
         Vector3 relativeRight = MainCam.transform.TransformDirection(Vector3.right);
-
-        //Turns relativeUp vector from world to objects local space
         Vector3 objectRelativeUp = transform.InverseTransformDirection(relativeUp);
-        //Turns relativeRight vector from world to object local space
         Vector3 objectRelaviveRight = transform.InverseTransformDirection(relativeRight);
 
         rotateBy = Quaternion.AngleAxis(rotateLeftRight / gameObject.transform.localScale.x * sensitivity, objectRelativeUp)
             * Quaternion.AngleAxis(-rotateUpDown / gameObject.transform.localScale.x * sensitivity, objectRelaviveRight);
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
-
         if (rotating)
         {
             gameObject.transform.localRotation *= rotateBy;
@@ -144,17 +189,24 @@ public class GrabbableObject : MonoBehaviour {
         {
             rend.material.color = originColor;
         }
-        
+
         if (touched)
         {
             rigid.isKinematic = false;
             transform.parent = null;
             beingCarried = false;
             rotating = false;
-            for (int i = 0; i < lookScript.Length; i++)
+            
+            // Protection pour lookScript
+            if (lookScript != null && lookScript.Length >= 2)
             {
-                lookScript[i].working = true;
+                for (int i = 0; i < lookScript.Length; i++)
+                {
+                    if (lookScript[i] != null)
+                        lookScript[i].working = true;
+                }
             }
+            
             touched = false;
         }
     }
@@ -163,26 +215,34 @@ public class GrabbableObject : MonoBehaviour {
     {
         if (beingCarried)
         {
-            if (Input.GetButtonDown("Squint") && !rotating)
+            // Protection pour lookScript dans Update aussi
+            if (lookScript != null && lookScript.Length >= 2)
             {
-                for (int i = 0; i < lookScript.Length; i++)
+                if (Input.GetButtonDown("Squint") && !rotating)
                 {
-                    lookScript[i].working = false;
+                    for (int i = 0; i < lookScript.Length; i++)
+                    {
+                        if (lookScript[i] != null)
+                            lookScript[i].working = false;
+                    }
+                    rotating = true;
                 }
-                rotating = true;
-            }
-            if (Input.GetButton("Squint"))
-            {
-                RelativeRotate(-Input.GetAxis("Mouse X") * 5, -Input.GetAxis("Mouse Y") * 5);
-            }
-            if (Input.GetButtonUp("Squint") && rotating)
-            {
-                for (int i = 0; i < lookScript.Length; i++)
+                
+                if (Input.GetButton("Squint"))
                 {
-                    lookScript[i].working = true;
+                    RelativeRotate(-Input.GetAxis("Mouse X") * 5, -Input.GetAxis("Mouse Y") * 5);
                 }
-                rotating = false;
-            } 
+                
+                if (Input.GetButtonUp("Squint") && rotating)
+                {
+                    for (int i = 0; i < lookScript.Length; i++)
+                    {
+                        if (lookScript[i] != null)
+                            lookScript[i].working = true;
+                    }
+                    rotating = false;
+                } 
+            }
         }
         else
         {
@@ -193,7 +253,6 @@ public class GrabbableObject : MonoBehaviour {
                     distToOrigin = Vector3.Distance(originPos, transform.position);
                     if (distToOrigin <= .25f)
                     {
-                        //disable physics
                         rigid.isKinematic = true;
                         transform.position = originPos;
                         transform.rotation = originRot;
@@ -203,7 +262,6 @@ public class GrabbableObject : MonoBehaviour {
                 }
             }
         }
-
     }
 
     void OnTriggerEnter(Collider coll)
@@ -212,18 +270,20 @@ public class GrabbableObject : MonoBehaviour {
         {
             source.Stop();
             source.pitch = Random.Range(lowPitchRange, highPitchRange);
-            float hitVol = Random.Range(.7f,1);
-            if (!muteCollSound)
+            float hitVol = Random.Range(.7f, 1);
+            
+            if (!muteCollSound && clips != null && clips.Length > 2)
             {
-                if (rigid.linearVelocity.magnitude < velocityClipSplit)
-                    source.PlayOneShot(clips[2], hitVol);//Soft Collision
-                else
-                    source.PlayOneShot(clips[3], hitVol);//Hard Collision
+                if (rigid.linearVelocity.magnitude < velocityClipSplit && clips[2] != null)
+                    source.PlayOneShot(clips[2], hitVol); // Soft Collision
+                else if (clips.Length > 3 && clips[3] != null)
+                    source.PlayOneShot(clips[3], hitVol); // Hard Collision
             }
+            
             touched = true;
         }
     }
-    
+
     private IEnumerator Fadeout()
     {
         yield return new WaitForSeconds(1);

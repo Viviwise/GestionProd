@@ -9,7 +9,7 @@ TagManager:
   - Interactable
   - Ladder
   - Slide
-  - Placeable
+  - PlacementZone
   layers:
   - Default
   - TransparentFX
