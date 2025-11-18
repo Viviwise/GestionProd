@@ -108,6 +108,7 @@ public class PlayerMovement : MonoBehaviour
     private bool onLadder = false;
     private bool onPlatform = false;
     private float defSlopeLimit = 45;
+    public bool isHamster;
 
     void Start()
     {
@@ -362,7 +363,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            if (crouching)
+            if (crouching || isHamster)
             {
                 controller.height = Mathf.Lerp(controller.height, 0.65f, Time.deltaTime * 3);
                 controller.center = Vector3.Lerp(controller.center, new Vector3(0, .4f, 0), Time.deltaTime * 3);
