@@ -71,6 +71,7 @@ public class PlayerMovement : MonoBehaviour
     private bool playerControl = false;
     private int jumpTimer;
     private GameObject mainCam;
+    private bool isHamster = false;
 
 
 
@@ -362,9 +363,9 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            if (crouching)
+            if (crouching && isHamster)
             {
-                controller.height = Mathf.Lerp(controller.height, 0.65f, Time.deltaTime * 3);
+                controller.height = Mathf.Lerp(controller.height, 0.2f, Time.deltaTime * 3);
                 controller.center = Vector3.Lerp(controller.center, new Vector3(0, .4f, 0), Time.deltaTime * 3);
                 //neckJoint.transform.localPosition = Vector3.Lerp(neckJoint.transform.localPosition, headCrouchPos, Time.deltaTime * 3/* * smooth*/);
                 if (speed > crouchSpeed)
