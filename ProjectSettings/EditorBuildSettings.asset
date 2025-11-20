@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Gestion/Salle4/Salle4.unity
+    path: Assets/Gestion/Salle4BeautifulCorner/Salle4.unity
     guid: 2c8f9433bcf2b2941b918bc373b5fe09
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity

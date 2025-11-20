@@ -73,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
     private bool playerControl = false;
     private int jumpTimer;
     private GameObject mainCam;
-
+    
     public GameObject hamsterMesh;
     private bool isHamster = false;
 
@@ -382,6 +382,7 @@ public class PlayerMovement : MonoBehaviour
                 controller.center = Vector3.Lerp(controller.center, new Vector3(0, .4f, 0), Time.deltaTime * 3);
                 if (speed > crouchSpeed)
                     speed = crouchSpeed;
+                crouchSoundPlayed= false;
             }
             else
             {
