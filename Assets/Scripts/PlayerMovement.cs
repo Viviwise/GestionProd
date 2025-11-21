@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /* 
 
@@ -71,6 +73,9 @@ public class PlayerMovement : MonoBehaviour
     private bool playerControl = false;
     private int jumpTimer;
     private GameObject mainCam;
+    
+    public GameObject hamsterMesh;
+    private bool isHamster = false;
 
 
 
@@ -108,7 +113,6 @@ public class PlayerMovement : MonoBehaviour
     private bool onLadder = false;
     private bool onPlatform = false;
     private float defSlopeLimit = 45;
-    public bool isHamster;
 
     void Start()
     {
@@ -137,8 +141,16 @@ public class PlayerMovement : MonoBehaviour
         defSlopeLimit = controller.slopeLimit;
     }
 
+    private void OnTriggerEnter(Collider hamsterMesh)
+    {
+        Destroy(hamsterMesh.gameObject);
+        isHamster = true;
+    }
+
+
     void FixedUpdate()
     {
+        
         if (isWorking)
         {
             // If both horizontal and vertical are used simultaneously, limit speed (if allowed), so the total doesn't exceed normal move speed
@@ -363,26 +375,32 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            if (crouching || isHamster)
+            if (isHamster)
             {
-                controller.height = Mathf.Lerp(controller.height, 0.65f, Time.deltaTime * 3);
+                // Mode mini / crouch forcé
+                controller.height = Mathf.Lerp(controller.height, 0.1f, Time.deltaTime * 3);
                 controller.center = Vector3.Lerp(controller.center, new Vector3(0, .4f, 0), Time.deltaTime * 3);
-                //neckJoint.transform.localPosition = Vector3.Lerp(neckJoint.transform.localPosition, headCrouchPos, Time.deltaTime * 3/* * smooth*/);
                 if (speed > crouchSpeed)
                     speed = crouchSpeed;
+                crouchSoundPlayed= false;
             }
-            else if (!crouching)
+            else
             {
+                // Retour normal
                 controller.height = Mathf.Lerp(controller.height, 1.65f, Time.deltaTime * 6);
                 controller.center = Vector3.Lerp(controller.center, new Vector3(0, 0, 0), Time.deltaTime * 6);
-                //neckJoint.transform.localPosition = Vector3.Lerp(neckJoint.transform.localPosition, headStartPos, Time.deltaTime  * 2/* * smooth*/);
-                // If running isn't on a toggle, then use the appropriate speed depending on whether the run button is down
             }
+
         }
     }
 
     void Update()
     {
+        if (isHamster && Input.GetKeyDown(KeyCode.H))
+        {
+            isHamster = false;
+        }
+        
         if (isWorking)
         {
             //we adjust the slope limit to 90 so the slope code doesn't fight the elevator code
