@@ -18,7 +18,7 @@ public class Door : MonoBehaviour
     private Vector3 heading = Vector3.zero;
     private Vector3 storedRayHitPt = Vector3.zero;
     private float dot = 0;
-    private bool isLocked = true;
+    public bool isLocked = true;
     private GameObject playerObj;
     private Rigidbody doorRigid;
     [Tooltip("Door Renderer")]
